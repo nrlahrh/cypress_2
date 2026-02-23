@@ -7,31 +7,36 @@ on:
     branches: [ main ]
 
 jobs:
-  cypress-run:
+  code_verification:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repo
-      - uses: actions/checkout@v3
+      # 1. Checkout repo
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      # Setup Node versi 20
-      - uses: actions/setup-node@v3
+      # 2. Setup Node versi 20
+      - name: Set Up Node
+        uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # Install dependencies
-      - run: npm ci
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
 
-      # Jalankan HTTP server di background
-      - name: Start HTTP server
+      # 4. Jalankan HTTP server untuk HTML
+      - name: Start HTTP Server
         run: npx http-server ./ -p 8080 &
 
-      # Tunggu server siap
-      - run: sleep 5
+      # 5. Tunggu server siap
+      - name: Wait for server
+        run: sleep 5
 
-      # Jalankan Cypress
-      - uses: cypress-io/github-action@v5
+      # 6. Jalankan Cypress tests
+      - name: Run Cypress
+        uses: cypress-io/github-action@v5
         with:
-          start: false       # karena server sudah jalan
+          start: false
           wait-on: 'http://127.0.0.1:8080/index.html'
           browser: chrome
