@@ -12,31 +12,26 @@ jobs:
 
     steps:
       # 1. Checkout repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # 2. Install Node.js
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      # 2. Setup Node versi kompatibel
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       # 3. Install dependencies
-      - name: Install dependencies
-        run: npm install
+      - run: npm ci
 
-      # 4. Start HTTP server untuk HTML static
+      # 4. Start HTTP server
       - name: Start HTTP server
         run: npx http-server ./ -p 8080 &
-      
-      # 5. Wait sebentar supaya server siap
-      - name: Wait for server
-        run: sleep 5
 
-      # 6. Jalankan Cypress tests
-      - name: Run Cypress
-        uses: cypress-io/github-action@v5
+      # 5. Tunggu server siap
+      - run: sleep 5
+
+      # 6. Jalankan Cypress
+      - uses: cypress-io/github-action@v5
         with:
-          start: false   # karena server sudah jalan manual
+          start: false
           wait-on: 'http://127.0.0.1:8080/index.html'
           browser: chrome
