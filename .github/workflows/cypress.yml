@@ -11,27 +11,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repo
+      # Checkout repo
       - uses: actions/checkout@v3
 
-      # 2. Setup Node versi kompatibel
+      # Setup Node versi 20
       - uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # 3. Install dependencies
+      # Install dependencies
       - run: npm ci
 
-      # 4. Start HTTP server
+      # Jalankan HTTP server di background
       - name: Start HTTP server
         run: npx http-server ./ -p 8080 &
 
-      # 5. Tunggu server siap
+      # Tunggu server siap
       - run: sleep 5
 
-      # 6. Jalankan Cypress
+      # Jalankan Cypress
       - uses: cypress-io/github-action@v5
         with:
-          start: false
+          start: false       # karena server sudah jalan
           wait-on: 'http://127.0.0.1:8080/index.html'
           browser: chrome
